@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Container from 'components/Container';
-import DetailPage from 'pages/DetailPage';
-import LinkPage from 'pages/LinkPage';
-import Avatar from 'components/Avatar';
+import { Container, Link, Avatar } from 'components';
+import { DetailPage, LinkPage } from 'pages';
+import type { ApiReturnType } from 'types';
+import { fetchApi } from 'api';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from 'styles/GlobalStyle';
-import { fetchApi } from 'api';
-import type { ApiReturnType } from 'types';
 
 function App() {
   const [links, setLinks] = useState<ApiReturnType[]>([]);
@@ -16,18 +14,21 @@ function App() {
       try {
         const data = await fetchApi();
         setLinks(data);
+        console.log(data);
       } catch (e) {
         console.log(e);
       }
     };
     getData();
   }, []);
+
   return (
     <>
       <GlobalStyle />
       <Container>
-        <LinkPage />
+        <LinkPage links={links} />
         {/* <DetailPage /> */}
+        {/* <img src={links[0].thumbnailUrl} /> */}
       </Container>
     </>
   );
