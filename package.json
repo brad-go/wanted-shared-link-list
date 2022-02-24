@@ -1,5 +1,5 @@
 {
-  "name": "rakuten-symphony-transfer",
+  "name": "symphony-storage",
   "version": "0.1.0",
   "private": true,
   "proxy": "https://storage-fe.fastraffic.io/homeworks",
