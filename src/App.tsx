@@ -8,13 +8,15 @@ import GlobalStyle from 'styles/GlobalStyle';
 
 function App() {
   const [links, setLinks] = useState<ApiReturnType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const getData = async () => {
       try {
+        setIsLoading(true);
         const data = await fetchApi();
         setLinks(data);
-        console.log(data);
+        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -25,11 +27,12 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <Container>
-        <LinkPage links={links} />
-        {/* <DetailPage /> */}
-        {/* <img src={links[0].thumbnailUrl} /> */}
-      </Container>
+      {!isLoading && (
+        <Container>
+          {/* <LinkPage links={links} /> */}
+          <DetailPage info={links[2]} />
+        </Container>
+      )}
     </>
   );
 }
