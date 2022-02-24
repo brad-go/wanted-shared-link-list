@@ -1,19 +1,41 @@
-import React from "react";
-import type { FC } from "react";
-import styled from "styled-components";
-import colors from "styles/colors";
-import Button from "components/Button";
+import React from 'react';
+import type { FC } from 'react';
+import Button from 'components/Button';
+import type { ApiReturnType, FilesType } from 'types';
+import { changeUnixToDate, changeToReadableFileSize } from 'utils';
+import styled from 'styled-components';
+import colors from 'styles/colors';
 
-const DetailPage: FC = () => {
+interface DetailPageProps {
+  info: ApiReturnType;
+}
+
+const DetailPage: FC<DetailPageProps> = ({ info }) => {
+  const handleFileList = (fileList: FilesType[]) =>
+    fileList.map(({ key, name, size, thumbnailUrl }, idx) => (
+      <FileListItem key={idx}>
+        <FileItemInfo thumbnailUrl={thumbnailUrl}>
+          <span />
+          <span>{name}</span>
+        </FileItemInfo>
+        {/* !!!수정 필요!!! */}
+        <FileItemSize>{changeToReadableFileSize(size)}</FileItemSize>
+      </FileListItem>
+    ));
+
   return (
     <>
       <Header>
         <LinkInfo>
-          <Title>로고파일</Title>
-          <Url>localhost/7LF4MDLY</Url>
+          <Title>{info.sent ? info.sent.subject : '제목 없음'}</Title>
+          <Url>localhost/{info.key}</Url>
         </LinkInfo>
         <DownloadButton>
-          <img referrerPolicy="no-referrer" src="/svgs/download.svg" alt="" />
+          <img
+            referrerPolicy="no-referrer"
+            src="/svgs/download.svg"
+            alt="download image"
+          />
           받기
         </DownloadButton>
       </Header>
@@ -21,29 +43,27 @@ const DetailPage: FC = () => {
         <Descrition>
           <Texts>
             <Top>링크 생성일</Top>
-            <Bottom>2022년 1월 12일 22:36 +09:00</Bottom>
+            <Bottom>{changeUnixToDate(info.created_at)}</Bottom>
             <Top>메세지</Top>
-            <Bottom>로고파일 전달 드립니다.</Bottom>
+            <Bottom>
+              {info.sent
+                ? info.sent.content === ''
+                  ? '내용이 없습니다.'
+                  : info.sent.content
+                : '내용이 없습니다.'}
+            </Bottom>
             <Top>다운로드 횟수</Top>
-            <Bottom>1</Bottom>
+            <Bottom>{info.download_count}</Bottom>
           </Texts>
           <LinkImage>
-            <Image />
+            <Image thumbnailUrl={info.thumbnailUrl} />
           </LinkImage>
         </Descrition>
         <ListSummary>
-          <div>총 1개의 파일</div>
-          <div>10.86KB</div>
+          <div>총 {info.count}개의 파일</div>
+          <div>{changeToReadableFileSize(info.size)}</div>
         </ListSummary>
-        <FileList>
-          <FileListItem>
-            <FileItemInfo>
-              <span />
-              <span>logo.png</span>
-            </FileItemInfo>
-            <FileItemSize>10.86KB</FileItemSize>
-          </FileListItem>
-        </FileList>
+        <FileList>{handleFileList(info.files)}</FileList>
       </Article>
     </>
   );
@@ -154,10 +174,11 @@ const LinkImage = styled.div`
   }
 `;
 
-const Image = styled.span`
+const Image = styled.span<{ thumbnailUrl: string }>`
   width: 120px;
   display: inline-block;
-  background-image: url(/svgs/default.svg);
+  background-image: ${({ thumbnailUrl }) =>
+    thumbnailUrl ? `url(${thumbnailUrl})` : `url(/svgs/adefltu.svg)`};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -202,7 +223,7 @@ const FileListItem = styled.li`
   align-items: center;
 `;
 
-const FileItemInfo = styled.div`
+const FileItemInfo = styled.div<{ thumbnailUrl: string }>`
   flex-grow: 0;
   max-width: 50%;
   flex-basis: 50%;
@@ -214,7 +235,8 @@ const FileItemInfo = styled.div`
     height: 40px;
     margin-right: 12px;
     display: inline-block;
-    background-image: url(/svgs/default.svg);
+    background-image: ${({ thumbnailUrl }) =>
+      thumbnailUrl ? `url(${thumbnailUrl})` : `url(/svgs/adefltu.svg)`};
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;

@@ -1,5 +1,6 @@
-export const changeUnixToDate = (number: number): Date => {
-  return new Date(number);
+export const changeUnixToDate = (number: number): string => {
+  const date: Date = new Date(number * 1000);
+  return date.toString();
 };
 
 export const changeToReadableFileSize = (size: number): string => {
