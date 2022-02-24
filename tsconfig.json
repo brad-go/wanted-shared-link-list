@@ -19,10 +19,12 @@
   },
   "include": ["src"],
   "paths": {
+    "api/*": ["api/*"],
     "pages/*": ["pages/*"],
     "components/*": ["components/*"],
     "constants/*": ["constants/*"],
     "styles/*": ["styles/*"],
+    "types/*": ["types/*"],
     "utils/*": ["utils/*"],
     "hooks/*": ["hooks/*"],
     "lib/*": ["lib/*"]
