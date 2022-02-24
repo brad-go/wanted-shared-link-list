@@ -2,7 +2,7 @@
   "name": "symphony-storage",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://storage-fe.fastraffic.io/homeworks",
+  "proxy": "env-cmd-f .env",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
