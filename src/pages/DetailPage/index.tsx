@@ -1,31 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FC } from 'react';
 import Button from 'components/Button';
 import type { ApiReturnType, FilesType } from 'types';
 import { changeUnixToDate, changeToReadableFileSize } from 'utils';
 import styled from 'styled-components';
 import colors from 'styles/colors';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { fetchApi } from 'api';
+import { Error404Page } from 'pages';
 
-interface DetailPageProps {
-  links: ApiReturnType[];
-}
-
-const DetailPage: FC<DetailPageProps> = ({ links }) => {
-  const { key } = useParams();
-  const navigate = useNavigate();
-
-  const keys: (string | undefined)[] = [];
-  links.map((link) => {
-    keys.push(link.key);
-  });
-
-  const info: ApiReturnType = links[keys.indexOf(key)];
+const DetailPage: FC = () => {
+  const { currentKey } = useParams();
+  const [link, setLink] = useState<ApiReturnType>();
 
   useEffect(() => {
-    if (!links[keys.indexOf(key)]) {
-      navigate('/404error');
-    }
+    const getData = async () => {
+      try {
+        const data = await fetchApi();
+        const payload = data.filter(({ key }) => key === currentKey)[0];
+        setLink(payload);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getData();
   }, []);
 
   const handleFileList = (fileList: FilesType[]) =>
@@ -42,42 +40,50 @@ const DetailPage: FC<DetailPageProps> = ({ links }) => {
 
   return (
     <>
-      <Header>
-        <LinkInfo>
-          <Title>{info.sent?.content ? info.sent.subject : '제목 없음'}</Title>
-          <Url>localhost/{info.key}</Url>
-        </LinkInfo>
-        <DownloadButton>
-          <img
-            referrerPolicy="no-referrer"
-            src="/svgs/download.svg"
-            alt="download image"
-          />
-          받기
-        </DownloadButton>
-      </Header>
-      <Article>
-        <Descrition>
-          <Texts>
-            <Top>링크 생성일</Top>
-            <Bottom>{changeUnixToDate(info.created_at)}</Bottom>
-            <Top>메세지</Top>
-            <Bottom>
-              {info.sent?.content ? info.sent.content : '내용이 없습니다'}
-            </Bottom>
-            <Top>다운로드 횟수</Top>
-            <Bottom>{info.download_count}</Bottom>
-          </Texts>
-          <LinkImage>
-            <Image thumbnailUrl={info.thumbnailUrl} />
-          </LinkImage>
-        </Descrition>
-        <ListSummary>
-          <div>총 {info.count}개의 파일</div>
-          <div>{changeToReadableFileSize(info.size)}</div>
-        </ListSummary>
-        <FileList>{handleFileList(info.files)}</FileList>
-      </Article>
+      {link ? (
+        <>
+          <Header>
+            <LinkInfo>
+              <Title>
+                {link.sent?.content ? link.sent.subject : '제목 없음'}
+              </Title>
+              <Url>localhost/{link.key}</Url>
+            </LinkInfo>
+            <DownloadButton>
+              <img
+                referrerPolicy="no-referrer"
+                src="/svgs/download.svg"
+                alt="download image"
+              />
+              받기
+            </DownloadButton>
+          </Header>
+          <Article>
+            <Descrition>
+              <Texts>
+                <Top>링크 생성일</Top>
+                <Bottom>{changeUnixToDate(link.created_at)}</Bottom>
+                <Top>메세지</Top>
+                <Bottom>
+                  {link.sent?.content ? link.sent.content : '내용이 없습니다'}
+                </Bottom>
+                <Top>다운로드 횟수</Top>
+                <Bottom>{link.download_count}</Bottom>
+              </Texts>
+              <LinkImage>
+                <Image thumbnailUrl={link.thumbnailUrl} />
+              </LinkImage>
+            </Descrition>
+            <ListSummary>
+              <div>총 {link.count}개의 파일</div>
+              <div>{changeToReadableFileSize(link.size)}</div>
+            </ListSummary>
+            <FileList>{handleFileList(link.files)}</FileList>
+          </Article>
+        </>
+      ) : (
+        <Error404Page />
+      )}
     </>
   );
 };

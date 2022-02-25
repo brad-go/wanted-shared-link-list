@@ -1,17 +1,28 @@
-import React, { PropsWithChildren } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FC } from 'react';
 import { Avatar, LinkItem } from 'components';
 import { TABLE_HEAD } from 'constants/index';
 import type { ApiReturnType } from 'types';
 import styled from 'styled-components';
 import colors from 'styles/colors';
-import { Link } from 'react-router-dom';
+import { fetchApi } from 'api';
 
-interface LinkPageProps {
-  links: ApiReturnType[];
-}
+const LinkPage: FC = () => {
+  const [links, setLinks] = useState<ApiReturnType[]>([]);
 
-const LinkPage: FC<LinkPageProps> = ({ links }) => {
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const data = await fetchApi();
+        setLinks(data);
+        console.log(data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getData();
+  }, []);
+
   const handleTableHead = (heads: string[]) =>
     heads.map((head: string, idx: number) => (
       <TableCell key={idx}>{head}</TableCell>
