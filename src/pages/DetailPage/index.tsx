@@ -8,18 +8,22 @@ import colors from 'styles/colors';
 import { useParams } from 'react-router-dom';
 import { fetchApi } from 'api';
 import { Error404Page } from 'pages';
+import { handleLinkUrl } from 'utils';
 
 const DetailPage: FC = () => {
   const { currentKey } = useParams();
   const itemUrl = window.location.href;
   const [link, setLink] = useState<ApiReturnType>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const getData = async () => {
       try {
+        setIsLoading(true);
         const data = await fetchApi();
         const payload = data.filter(({ key }) => key === currentKey)[0];
         setLink(payload);
+        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -41,49 +45,55 @@ const DetailPage: FC = () => {
 
   return (
     <>
-      {link ? (
-        <>
-          <Header>
-            <LinkInfo>
-              <Title>
-                {link.sent?.content ? link.sent.subject : '제목 없음'}
-              </Title>
-              <Url>{itemUrl}</Url>
-            </LinkInfo>
-            <DownloadButton>
-              <img
-                referrerPolicy="no-referrer"
-                src="/svgs/download.svg"
-                alt="download image"
-              />
-              받기
-            </DownloadButton>
-          </Header>
-          <Article>
-            <Descrition>
-              <Texts>
-                <Top>링크 생성일</Top>
-                <Bottom>{changeUnixToDate(link.created_at)}</Bottom>
-                <Top>메세지</Top>
-                <Bottom>
-                  {link.sent?.content ? link.sent.content : '내용이 없습니다'}
-                </Bottom>
-                <Top>다운로드 횟수</Top>
-                <Bottom>{link.download_count}</Bottom>
-              </Texts>
-              <LinkImage>
-                <Image thumbnailUrl={link.thumbnailUrl} />
-              </LinkImage>
-            </Descrition>
-            <ListSummary>
-              <div>총 {link.count}개의 파일</div>
-              <div>{changeToReadableFileSize(link.size)}</div>
-            </ListSummary>
-            <FileList>{handleFileList(link.files)}</FileList>
-          </Article>
-        </>
-      ) : (
-        <Error404Page />
+      {!isLoading && (
+        <div>
+          {link ? (
+            <>
+              <Header>
+                <LinkInfo>
+                  <Title>
+                    {link.sent?.content ? link.sent.subject : '제목 없음'}
+                  </Title>
+                  <Url onClick={(e) => handleLinkUrl(e, link)}>{itemUrl}</Url>
+                </LinkInfo>
+                <DownloadButton>
+                  <img
+                    referrerPolicy="no-referrer"
+                    src="/svgs/download.svg"
+                    alt="download image"
+                  />
+                  받기
+                </DownloadButton>
+              </Header>
+              <Article>
+                <Descrition>
+                  <Texts>
+                    <Top>링크 생성일</Top>
+                    <Bottom>{changeUnixToDate(link.created_at)}</Bottom>
+                    <Top>메세지</Top>
+                    <Bottom>
+                      {link.sent?.content
+                        ? link.sent.content
+                        : '내용이 없습니다'}
+                    </Bottom>
+                    <Top>다운로드 횟수</Top>
+                    <Bottom>{link.download_count}</Bottom>
+                  </Texts>
+                  <LinkImage>
+                    <Image thumbnailUrl={link.thumbnailUrl} />
+                  </LinkImage>
+                </Descrition>
+                <ListSummary>
+                  <div>총 {link.count}개의 파일</div>
+                  <div>{changeToReadableFileSize(link.size)}</div>
+                </ListSummary>
+                <FileList>{handleFileList(link.files)}</FileList>
+              </Article>
+            </>
+          ) : (
+            <Error404Page />
+          )}
+        </div>
       )}
     </>
   );

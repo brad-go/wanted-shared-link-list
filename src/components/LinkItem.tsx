@@ -5,6 +5,7 @@ import { changeToReadableFileSize } from 'utils';
 import colors from 'styles/colors';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
+import { handleLinkUrl } from 'utils';
 
 interface LinksProps {
   link: ApiReturnType;
@@ -39,7 +40,9 @@ const LinkItem = ({ link }: LinksProps) => {
               <LinkTitle>
                 {link.sent ? link.sent.subject : '제목 없음'}
               </LinkTitle>
-              <LinkUrl>{itemUrl + link.key}</LinkUrl>
+              <LinkUrl onClick={(e) => handleLinkUrl(e, link)}>
+                {itemUrl + link.key}
+              </LinkUrl>
             </LinkTexts>
           </LinkInfo>
           <span />
