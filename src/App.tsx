@@ -1,7 +1,7 @@
 import React from 'react';
+import Router from './router/Router';
 import { Container } from 'components';
 import GlobalStyle from 'styles/GlobalStyle';
-import Router from './router/Router';
 
 function App() {
   return (

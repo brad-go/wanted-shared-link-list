@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import type { FC } from 'react';
+import { fetchApi } from 'api';
 import { Avatar, LinkItem } from 'components';
 import { TABLE_HEAD } from 'constants/index';
 import type { ApiReturnType } from 'types';
 import styled from 'styled-components';
 import colors from 'styles/colors';
-import { fetchApi } from 'api';
 
 const LinkPage: FC = () => {
   const [links, setLinks] = useState<ApiReturnType[]>([]);

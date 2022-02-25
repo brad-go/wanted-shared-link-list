@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import type { FC } from 'react';
-import Button from 'components/Button';
-import type { ApiReturnType, FilesType } from 'types';
-import { changeUnixToDate, changeToReadableFileSize } from 'utils';
-import styled from 'styled-components';
-import colors from 'styles/colors';
 import { useParams } from 'react-router-dom';
 import { fetchApi } from 'api';
 import { Error404Page } from 'pages';
-import { handleLinkUrl } from 'utils';
+import Button from 'components/Button';
+import {
+  changeUnixToDate,
+  changeToReadableFileSize,
+  addCommaToNumber,
+  handleLinkUrl,
+} from 'utils';
+import type { ApiReturnType, FilesType } from 'types';
+import styled from 'styled-components';
+import colors from 'styles/colors';
 
 const DetailPage: FC = () => {
   const { currentKey } = useParams();
@@ -84,7 +88,7 @@ const DetailPage: FC = () => {
                   </LinkImage>
                 </Descrition>
                 <ListSummary>
-                  <div>총 {link.count}개의 파일</div>
+                  <div>총 {addCommaToNumber(link.count)}개의 파일</div>
                   <div>{changeToReadableFileSize(link.size)}</div>
                 </ListSummary>
                 <FileList>{handleFileList(link.files)}</FileList>
