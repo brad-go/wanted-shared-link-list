@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { FC } from 'react';
 import { fetchApi } from 'api';
-import { Avatar, LinkItem } from 'components';
+import { LinkItem } from 'components';
 import { TABLE_HEAD } from 'constants/index';
 import type { ApiReturnType } from 'types';
 import styled from 'styled-components';

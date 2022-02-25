@@ -4,4 +4,4 @@ export {
   addCommaToNumber,
 } from './format';
 
-export { handleLinkUrl } from './alert';
+export { handleLinkUrl, getCurrentUrl } from './links';

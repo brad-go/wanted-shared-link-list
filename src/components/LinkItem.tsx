@@ -1,11 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from './Avatar';
+import {
+  handleLinkUrl,
+  changeToReadableFileSize,
+  addCommaToNumber,
+  getCurrentUrl,
+} from 'utils';
 import type { ApiReturnType } from 'types';
-import { changeToReadableFileSize } from 'utils';
 import colors from 'styles/colors';
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
-import { handleLinkUrl, addCommaToNumber } from 'utils';
 
 interface LinksProps {
   link: ApiReturnType;
@@ -13,7 +17,6 @@ interface LinksProps {
 
 const LinkItem = ({ link }: LinksProps) => {
   const navigate = useNavigate();
-  const itemUrl = window.location.href;
 
   const handleReceiver = (emailList: string[]) =>
     emailList.map((email: string, idx: number) => (
@@ -41,7 +44,7 @@ const LinkItem = ({ link }: LinksProps) => {
                 {link.sent ? link.sent.subject : '제목 없음'}
               </LinkTitle>
               <LinkUrl onClick={(e) => handleLinkUrl(e, link)}>
-                {itemUrl + link.key}
+                {getCurrentUrl() + link.key}
               </LinkUrl>
             </LinkTexts>
           </LinkInfo>

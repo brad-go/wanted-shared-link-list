@@ -19,3 +19,7 @@ export const handleLinkUrl = (
     },
   );
 };
+
+export const getCurrentUrl = () => {
+  return window.location.href;
+};

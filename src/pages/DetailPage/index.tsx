@@ -9,6 +9,7 @@ import {
   changeToReadableFileSize,
   addCommaToNumber,
   handleLinkUrl,
+  getCurrentUrl,
 } from 'utils';
 import type { ApiReturnType, FilesType } from 'types';
 import styled from 'styled-components';
@@ -16,7 +17,6 @@ import colors from 'styles/colors';
 
 const DetailPage: FC = () => {
   const { currentKey } = useParams();
-  const itemUrl = window.location.href;
   const [link, setLink] = useState<ApiReturnType>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -58,7 +58,9 @@ const DetailPage: FC = () => {
                   <Title>
                     {link.sent?.content ? link.sent.subject : '제목 없음'}
                   </Title>
-                  <Url onClick={(e) => handleLinkUrl(e, link)}>{itemUrl}</Url>
+                  <Url onClick={(e) => handleLinkUrl(e, link)}>
+                    {getCurrentUrl()}
+                  </Url>
                 </LinkInfo>
                 <DownloadButton>
                   <img
