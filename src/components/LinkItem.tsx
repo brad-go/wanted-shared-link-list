@@ -4,12 +4,14 @@ import type { ApiReturnType } from 'types';
 import { changeToReadableFileSize } from 'utils';
 import colors from 'styles/colors';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 interface LinksProps {
   link: ApiReturnType;
+  children?: JSX.Element;
 }
 
-const Link = ({ link, ...props }: LinksProps) => {
+const LinkItem = ({ link, children, ...props }: LinksProps) => {
   const handleReceiver = (emailList: string[]) =>
     emailList.map((email: string, idx: number) => (
       <Avatar text={email} key={idx} />
@@ -17,41 +19,45 @@ const Link = ({ link, ...props }: LinksProps) => {
 
   return (
     <TableRow {...props}>
-      <TableCell>
-        <LinkInfo>
-          <LinkImage>
-            <img
-              referrerPolicy="no-referrer"
-              src={link.thumbnailUrl}
-              alt={link.summary}
-            />
-          </LinkImage>
-          <LinkTexts>
-            <LinkTitle>{link.sent ? link.sent.subject : '제목 없음'}</LinkTitle>
-            <LinkUrl>localhost/{link.key}</LinkUrl>
-          </LinkTexts>
-        </LinkInfo>
-        <span />
-      </TableCell>
-      <TableCell>
-        <span>파일개수</span>
-        <span>{link.count}</span>
-      </TableCell>
-      <TableCell>
-        <span>파일사이즈</span>
-        <span>{changeToReadableFileSize(link.size)}</span>
-      </TableCell>
-      <TableCell>
-        <span>유효기간</span>
-        {/* !!!수정 필요!!! */}
-        <span>48시간 00분</span>
-      </TableCell>
-      <TableCell>
-        <span>받은사람</span>
-        <LinkReceivers>
-          {link.sent && handleReceiver(link.sent.emails)}
-        </LinkReceivers>
-      </TableCell>
+      <Link to={`details/${link.key}`}>
+        <TableCell>
+          <LinkInfo>
+            <LinkImage>
+              <img
+                referrerPolicy="no-referrer"
+                src={link.thumbnailUrl}
+                alt={link.summary}
+              />
+            </LinkImage>
+            <LinkTexts>
+              <LinkTitle>
+                {link.sent ? link.sent.subject : '제목 없음'}
+              </LinkTitle>
+              <LinkUrl>localhost/{link.key}</LinkUrl>
+            </LinkTexts>
+          </LinkInfo>
+          <span />
+        </TableCell>
+        <TableCell>
+          <span>파일개수</span>
+          <span>{link.count}</span>
+        </TableCell>
+        <TableCell>
+          <span>파일사이즈</span>
+          <span>{changeToReadableFileSize(link.size)}</span>
+        </TableCell>
+        <TableCell>
+          <span>유효기간</span>
+          {/* !!!수정 필요!!! */}
+          <span>48시간 00분</span>
+        </TableCell>
+        <TableCell>
+          <span>받은사람</span>
+          <LinkReceivers>
+            {link.sent && handleReceiver(link.sent.emails)}
+          </LinkReceivers>
+        </TableCell>
+      </Link>
     </TableRow>
   );
 };
@@ -126,4 +132,4 @@ const LinkReceivers = styled.div`
   }
 `;
 
-export default Link;
+export default LinkItem;

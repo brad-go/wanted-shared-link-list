@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Link, Avatar } from 'components';
+import { Container } from 'components';
 import { DetailPage, LinkPage } from 'pages';
 import type { ApiReturnType } from 'types';
 import { fetchApi } from 'api';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from 'styles/GlobalStyle';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
   const [links, setLinks] = useState<ApiReturnType[]>([]);
@@ -29,8 +30,19 @@ function App() {
       <GlobalStyle />
       {!isLoading && (
         <Container>
-          {/* <LinkPage links={links} /> */}
-          <DetailPage info={links[2]} />
+          <Router>
+            <Routes>
+              <Route path="/" element={<LinkPage links={links} />}></Route>
+              {links.map((link, idx) => (
+                <Route
+                  key={link.key}
+                  path="/details/:key"
+                  element={<DetailPage info={link} />}
+                />
+              ))}
+              {/* <Route path="*" element={<ErrorPage />} /> */}
+            </Routes>
+          </Router>
         </Container>
       )}
     </>
