@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Avatar from './Avatar';
 import useExpire from 'hooks/useExpire';
@@ -31,6 +31,13 @@ const LinkItem = ({ link }: LinksProps) => {
       <Avatar text={email} key={idx} />
     ));
 
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
+  ) => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = '/svgs/default.svg';
+  };
+
   return (
     <TableRow onClick={goToDetailPage}>
       <TableCell>
@@ -40,6 +47,7 @@ const LinkItem = ({ link }: LinksProps) => {
               referrerPolicy="no-referrer"
               src={link.thumbnailUrl}
               alt={link.summary}
+              onError={handleImageError}
             />
           </LinkImage>
           <LinkTexts>
