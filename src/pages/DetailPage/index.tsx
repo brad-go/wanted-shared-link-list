@@ -11,6 +11,7 @@ import { Error404Page } from 'pages';
 
 const DetailPage: FC = () => {
   const { currentKey } = useParams();
+  const itemUrl = window.location.href;
   const [link, setLink] = useState<ApiReturnType>();
 
   useEffect(() => {
@@ -47,7 +48,7 @@ const DetailPage: FC = () => {
               <Title>
                 {link.sent?.content ? link.sent.subject : '제목 없음'}
               </Title>
-              <Url>localhost/{link.key}</Url>
+              <Url>{itemUrl}</Url>
             </LinkInfo>
             <DownloadButton>
               <img

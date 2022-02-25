@@ -8,11 +8,11 @@ import { Link, useNavigate } from 'react-router-dom';
 
 interface LinksProps {
   link: ApiReturnType;
-  children?: JSX.Element;
 }
 
-const LinkItem = ({ link, children, ...props }: LinksProps) => {
+const LinkItem = ({ link }: LinksProps) => {
   const navigate = useNavigate();
+  const itemUrl = window.location.href;
 
   const handleReceiver = (emailList: string[]) =>
     emailList.map((email: string, idx: number) => (
@@ -39,7 +39,7 @@ const LinkItem = ({ link, children, ...props }: LinksProps) => {
               <LinkTitle>
                 {link.sent ? link.sent.subject : '제목 없음'}
               </LinkTitle>
-              <LinkUrl>localhost/{link.key}</LinkUrl>
+              <LinkUrl>{itemUrl + link.key}</LinkUrl>
             </LinkTexts>
           </LinkInfo>
           <span />
