@@ -7,7 +7,7 @@ const HH = 1000 * 60 * 60;
 const DD = 1000 * 60 * 60 * 24;
 
 export const changeUnixToDate = (number: number): string => {
-  const date: Date = new Date((number + DAYS_45) * 1000);
+  const date: Date = new Date((number + DAYS_30) * 1000);
   const year: number = date.getFullYear();
   const month: number = date.getMonth() + 1;
   const day: number = date.getDate();
@@ -21,7 +21,7 @@ export const changeUnixToDate = (number: number): string => {
 
 export const calcExpirationDate = (number: number): string => {
   const now: number = new Date().getTime();
-  const exiration: number = (number + DAYS_45) * 1000;
+  const exiration: number = (number + DAYS_30) * 1000;
   const restTime = exiration - now;
 
   const day = Math.abs(Math.trunc(restTime / DD));
@@ -30,8 +30,7 @@ export const calcExpirationDate = (number: number): string => {
 
   if (restTime > TWO_DAYS) return `${day}일`;
   if (restTime >= 0) return `${hour}시간 ${minute}분`;
-  if (restTime < -TWO_DAYS) return `${day}일 경과`;
-  return `${hour}시간 ${minute}분 경과`;
+  return `만료됨`;
 };
 
 export const changeToReadableFileSize = (size: number): string => {

@@ -1,78 +1,75 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Avatar from './Avatar';
+import useExpire from 'hooks/useExpire';
 import {
   handleLinkUrl,
-  changeUnixToDate,
+  calcExpirationDate,
   changeToReadableFileSize,
   addCommaToNumber,
   getCurrentUrl,
 } from 'utils';
+import { EXPIRE, SUBJECTLESS } from 'constants/string';
 import type { ApiReturnType } from 'types';
 import colors from 'styles/colors';
 import styled from 'styled-components';
-import { calcExpirationDate } from 'utils/format';
 
 interface LinksProps {
   link: ApiReturnType;
 }
 
 const LinkItem = ({ link }: LinksProps) => {
+  const { expire } = useExpire(link);
   const navigate = useNavigate();
+
+  const goToDetailPage = () => {
+    navigate(`/${link.key}`);
+  };
 
   const handleReceiver = (emailList: string[]) =>
     emailList.map((email: string, idx: number) => (
       <Avatar text={email} key={idx} />
     ));
 
-  const goToDetailPage = () => {
-    navigate(`/${link.key}`);
-  };
-
   return (
-    <>
-      <TableRow onClick={goToDetailPage}>
-        <TableCell>
-          <LinkInfo>
-            <LinkImage>
-              <img
-                referrerPolicy="no-referrer"
-                src={link.thumbnailUrl}
-                alt={link.summary}
-              />
-            </LinkImage>
-            <LinkTexts>
-              <LinkTitle>
-                {link.sent ? link.sent.subject : '제목 없음'}
-              </LinkTitle>
-              <LinkUrl onClick={(e) => handleLinkUrl(e, link)}>
-                {getCurrentUrl() + link.key}
-              </LinkUrl>
-            </LinkTexts>
-          </LinkInfo>
-          <span />
-        </TableCell>
-        <TableCell>
-          <span>파일개수</span>
-          <span>{addCommaToNumber(link.count)}</span>
-        </TableCell>
-        <TableCell>
-          <span>파일사이즈</span>
-          <span>{changeToReadableFileSize(link.size)}</span>
-        </TableCell>
-        <TableCell>
-          <span>유효기간</span>
-          {/* !!!수정 필요!!! */}
-          <span>{calcExpirationDate(link.expires_at)}</span>
-        </TableCell>
-        <TableCell>
-          <span>받은사람</span>
-          <LinkReceivers>
-            {link.sent && handleReceiver(link.sent.emails)}
-          </LinkReceivers>
-        </TableCell>
-      </TableRow>
-    </>
+    <TableRow onClick={goToDetailPage}>
+      <TableCell>
+        <LinkInfo>
+          <LinkImage>
+            <img
+              referrerPolicy="no-referrer"
+              src={link.thumbnailUrl}
+              alt={link.summary}
+            />
+          </LinkImage>
+          <LinkTexts>
+            <LinkTitle>{link.sent ? link.sent.subject : SUBJECTLESS}</LinkTitle>
+            <LinkUrl onClick={(e) => handleLinkUrl(e, link, expire)}>
+              {expire === EXPIRE ? expire : getCurrentUrl() + link.key}
+            </LinkUrl>
+          </LinkTexts>
+        </LinkInfo>
+        <span />
+      </TableCell>
+      <TableCell>
+        <span>파일개수</span>
+        <span>{addCommaToNumber(link.count)}</span>
+      </TableCell>
+      <TableCell>
+        <span>파일사이즈</span>
+        <span>{changeToReadableFileSize(link.size)}</span>
+      </TableCell>
+      <TableCell>
+        <span>유효기간</span>
+        <span>{calcExpirationDate(link.expires_at)}</span>
+      </TableCell>
+      <TableCell>
+        <span>받은사람</span>
+        <LinkReceivers>
+          {link.sent && handleReceiver(link.sent.emails)}
+        </LinkReceivers>
+      </TableCell>
+    </TableRow>
   );
 };
 

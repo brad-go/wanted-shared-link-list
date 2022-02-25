@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { fetchApi } from 'api';
 import { Error404Page } from 'pages';
 import Button from 'components/Button';
+import useExpire from 'hooks/useExpire';
 import {
   changeUnixToDate,
   changeToReadableFileSize,
@@ -11,23 +12,24 @@ import {
   handleLinkUrl,
   getCurrentUrl,
 } from 'utils';
+import { API_DEFAULT_DATA } from 'constants/api';
+import { EXPIRE, SUBJECTLESS } from 'constants/string';
 import type { ApiReturnType, FilesType } from 'types';
 import styled from 'styled-components';
 import colors from 'styles/colors';
 
 const DetailPage: FC = () => {
   const { currentKey } = useParams();
-  const [link, setLink] = useState<ApiReturnType>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [link, setLink] = useState<ApiReturnType>(API_DEFAULT_DATA);
+
+  const { expire } = useExpire(link);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        setIsLoading(true);
         const data = await fetchApi();
         const payload = data.filter(({ key }) => key === currentKey)[0];
         setLink(payload);
-        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -42,62 +44,55 @@ const DetailPage: FC = () => {
           <span />
           <span>{name}</span>
         </FileItemInfo>
-        {/* !!!수정 필요!!! */}
         <FileItemSize>{changeToReadableFileSize(size)}</FileItemSize>
       </FileListItem>
     ));
 
   return (
     <>
-      {!isLoading && (
+      {link ? (
         <>
-          {link ? (
-            <>
-              <Header>
-                <LinkInfo>
-                  <Title>{link.sent ? link.sent.subject : '제목 없음'}</Title>
-                  <Url onClick={(e) => handleLinkUrl(e, link)}>
-                    {getCurrentUrl()}
-                  </Url>
-                </LinkInfo>
-                <DownloadButton>
-                  <img
-                    referrerPolicy="no-referrer"
-                    src="/svgs/download.svg"
-                    alt="download image"
-                  />
-                  받기
-                </DownloadButton>
-              </Header>
-              <Article>
-                <Descrition>
-                  <Texts>
-                    <Top>링크 생성일</Top>
-                    <Bottom>{changeUnixToDate(link.created_at)}</Bottom>
-                    <Top>메세지</Top>
-                    <Bottom>
-                      {link.sent?.content
-                        ? link.sent.content
-                        : '내용이 없습니다'}
-                    </Bottom>
-                    <Top>다운로드 횟수</Top>
-                    <Bottom>{link.download_count}</Bottom>
-                  </Texts>
-                  <LinkImage>
-                    <Image thumbnailUrl={link.thumbnailUrl} />
-                  </LinkImage>
-                </Descrition>
-                <ListSummary>
-                  <div>총 {addCommaToNumber(link.count)}개의 파일</div>
-                  <div>{changeToReadableFileSize(link.size)}</div>
-                </ListSummary>
-                <FileList>{handleFileList(link.files)}</FileList>
-              </Article>
-            </>
-          ) : (
-            <Error404Page />
-          )}
+          <Header>
+            <LinkInfo>
+              <Title>{link.sent ? link.sent.subject : SUBJECTLESS}</Title>
+              <Url onClick={(e) => handleLinkUrl(e, link, expire)}>
+                {expire === EXPIRE ? expire : getCurrentUrl()}
+              </Url>
+            </LinkInfo>
+            <DownloadButton>
+              <img
+                referrerPolicy="no-referrer"
+                src="/svgs/download.svg"
+                alt="download image"
+              />
+              받기
+            </DownloadButton>
+          </Header>
+          <Article>
+            <Descrition>
+              <Texts>
+                <Top>링크 생성일</Top>
+                <Bottom>{changeUnixToDate(link.created_at)}</Bottom>
+                <Top>메세지</Top>
+                <Bottom>
+                  {link.sent?.content ? link.sent.content : '내용이 없습니다'}
+                </Bottom>
+                <Top>다운로드 횟수</Top>
+                <Bottom>{link.download_count}</Bottom>
+              </Texts>
+              <LinkImage>
+                <Image thumbnailUrl={link.thumbnailUrl} />
+              </LinkImage>
+            </Descrition>
+            <ListSummary>
+              <div>총 {addCommaToNumber(link.count)}개의 파일</div>
+              <div>{changeToReadableFileSize(link.size)}</div>
+            </ListSummary>
+            <FileList>{handleFileList(link.files)}</FileList>
+          </Article>
         </>
+      ) : (
+        <Error404Page />
       )}
     </>
   );

@@ -1,21 +1,27 @@
+import { EXPIRE, SUBJECTLESS } from 'constants/string';
 import type { ApiReturnType } from 'types';
+
+const ALERT_ADDRESS = [
+  '주소가 복사 되었습니다.',
+  '주소 복사가 실패 되었습니다.',
+];
 
 export const handleLinkUrl = (
   e: React.MouseEvent<HTMLElement>,
   link: ApiReturnType,
+  expire: string,
 ) => {
+  if (expire === EXPIRE) return;
   e.stopPropagation();
   const urlText = e.currentTarget.innerHTML;
   navigator.clipboard.writeText(urlText).then(
     () => {
       alert(
-        `${
-          link.sent ? link.sent.subject : '제목 없음'
-        } 주소가 복사 되었습니다.`,
+        `${link.sent ? link.sent.subject : SUBJECTLESS} ${ALERT_ADDRESS[0]}.`,
       );
     },
     () => {
-      alert('주소 복사가 실패 되었습니다.');
+      alert(ALERT_ADDRESS[1]);
     },
   );
 };

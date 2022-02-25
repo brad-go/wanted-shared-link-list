@@ -1,6 +1,7 @@
 export {
   changeUnixToDate,
   changeToReadableFileSize,
+  calcExpirationDate,
   addCommaToNumber,
 } from './format';
 
