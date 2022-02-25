@@ -18,7 +18,7 @@ const LinkPage: FC<LinkPageProps> = ({ links }) => {
     ));
 
   const handleTableItem = (links: ApiReturnType[]) =>
-    links.map((link: ApiReturnType) => <LinkItem key={link.key} link={link} />);
+    links.map((link: ApiReturnType) => <LinkItem link={link} key={link.key} />);
 
   return (
     <>

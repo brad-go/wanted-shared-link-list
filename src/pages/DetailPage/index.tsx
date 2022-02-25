@@ -1,16 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { FC } from 'react';
 import Button from 'components/Button';
 import type { ApiReturnType, FilesType } from 'types';
 import { changeUnixToDate, changeToReadableFileSize } from 'utils';
 import styled from 'styled-components';
 import colors from 'styles/colors';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface DetailPageProps {
-  info: ApiReturnType;
+  links: ApiReturnType[];
 }
 
-const DetailPage: FC<DetailPageProps> = ({ info }) => {
+const DetailPage: FC<DetailPageProps> = ({ links }) => {
+  const { key } = useParams();
+  const navigate = useNavigate();
+
+  const keys: (string | undefined)[] = [];
+  links.map((link) => {
+    keys.push(link.key);
+  });
+
+  const info: ApiReturnType = links[keys.indexOf(key)];
+
+  useEffect(() => {
+    if (!links[keys.indexOf(key)]) {
+      navigate('/404error');
+    }
+  }, []);
+
   const handleFileList = (fileList: FilesType[]) =>
     fileList.map(({ key, name, size, thumbnailUrl }) => (
       <FileListItem key={key}>
@@ -27,7 +44,7 @@ const DetailPage: FC<DetailPageProps> = ({ info }) => {
     <>
       <Header>
         <LinkInfo>
-          <Title>{info.sent ? info.sent.subject : '제목 없음'}</Title>
+          <Title>{info.sent?.content ? info.sent.subject : '제목 없음'}</Title>
           <Url>localhost/{info.key}</Url>
         </LinkInfo>
         <DownloadButton>

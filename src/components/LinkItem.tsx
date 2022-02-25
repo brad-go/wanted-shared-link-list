@@ -4,7 +4,7 @@ import type { ApiReturnType } from 'types';
 import { changeToReadableFileSize } from 'utils';
 import colors from 'styles/colors';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface LinksProps {
   link: ApiReturnType;
@@ -12,14 +12,20 @@ interface LinksProps {
 }
 
 const LinkItem = ({ link, children, ...props }: LinksProps) => {
+  const navigate = useNavigate();
+
   const handleReceiver = (emailList: string[]) =>
     emailList.map((email: string, idx: number) => (
       <Avatar text={email} key={idx} />
     ));
 
+  const goDetail = () => {
+    navigate(`/${link.key}`);
+  };
+
   return (
-    <TableRow {...props}>
-      <Link to={`details/${link.key}`}>
+    <>
+      <TableRow onClick={goDetail}>
         <TableCell>
           <LinkInfo>
             <LinkImage>
@@ -57,8 +63,8 @@ const LinkItem = ({ link, children, ...props }: LinksProps) => {
             {link.sent && handleReceiver(link.sent.emails)}
           </LinkReceivers>
         </TableCell>
-      </Link>
-    </TableRow>
+      </TableRow>
+    </>
   );
 };
 

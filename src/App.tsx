@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container } from 'components';
-import { DetailPage, LinkPage } from 'pages';
+import { DetailPage, LinkPage, Error404Page } from 'pages';
 import type { ApiReturnType } from 'types';
 import { fetchApi } from 'api';
 import { ThemeProvider } from 'styled-components';
@@ -32,15 +32,9 @@ function App() {
         <Container>
           <Router>
             <Routes>
-              <Route path="/" element={<LinkPage links={links} />}></Route>
-              {links.map((link, idx) => (
-                <Route
-                  key={link.key}
-                  path="/details/:key"
-                  element={<DetailPage info={link} />}
-                />
-              ))}
-              {/* <Route path="*" element={<ErrorPage />} /> */}
+              <Route path="/" element={<LinkPage links={links} />} />
+              <Route path="/:key" element={<DetailPage links={links} />} />
+              <Route path="*" element={<Error404Page />} />
             </Routes>
           </Router>
         </Container>

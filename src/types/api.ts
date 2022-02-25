@@ -21,5 +21,5 @@ export interface ApiReturnType {
   summary: string;
   thumbnailUrl: string;
   files: FilesType[];
-  sent?: SentType;
+  sent?: SentType | undefined;
 }
