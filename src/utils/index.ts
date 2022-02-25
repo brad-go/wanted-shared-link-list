@@ -3,3 +3,5 @@ export {
   changeToReadableFileSize,
   addCommaToNumber,
 } from './format';
+
+export { handleLinkUrl } from './alert';
