@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import type { FC } from 'react';
-import { Avatar, Link } from 'components';
+import { Avatar, LinkItem } from 'components';
 import { TABLE_HEAD } from 'constants/index';
 import type { ApiReturnType } from 'types';
 import styled from 'styled-components';
 import colors from 'styles/colors';
+import { Link } from 'react-router-dom';
 
 interface LinkPageProps {
   links: ApiReturnType[];
@@ -17,9 +18,7 @@ const LinkPage: FC<LinkPageProps> = ({ links }) => {
     ));
 
   const handleTableItem = (links: ApiReturnType[]) =>
-    links.map((link: ApiReturnType, idx: number) => (
-      <Link key={idx} link={link} />
-    ));
+    links.map((link: ApiReturnType) => <LinkItem key={link.key} link={link} />);
 
   return (
     <>

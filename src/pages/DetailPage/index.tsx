@@ -12,8 +12,8 @@ interface DetailPageProps {
 
 const DetailPage: FC<DetailPageProps> = ({ info }) => {
   const handleFileList = (fileList: FilesType[]) =>
-    fileList.map(({ key, name, size, thumbnailUrl }, idx) => (
-      <FileListItem key={idx}>
+    fileList.map(({ key, name, size, thumbnailUrl }) => (
+      <FileListItem key={key}>
         <FileItemInfo thumbnailUrl={thumbnailUrl}>
           <span />
           <span>{name}</span>
@@ -46,11 +46,7 @@ const DetailPage: FC<DetailPageProps> = ({ info }) => {
             <Bottom>{changeUnixToDate(info.created_at)}</Bottom>
             <Top>메세지</Top>
             <Bottom>
-              {info.sent
-                ? info.sent.content === ''
-                  ? '내용이 없습니다.'
-                  : info.sent.content
-                : '내용이 없습니다.'}
+              {info.sent?.content ? info.sent.content : '내용이 없습니다'}
             </Bottom>
             <Top>다운로드 횟수</Top>
             <Bottom>{info.download_count}</Bottom>
