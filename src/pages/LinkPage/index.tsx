@@ -6,21 +6,10 @@ import { TABLE_HEAD } from 'constants/index';
 import type { ApiReturnType } from 'types';
 import styled from 'styled-components';
 import colors from 'styles/colors';
+import useFetch from 'hooks/useFetch';
 
 const LinkPage: FC = () => {
-  const [links, setLinks] = useState<ApiReturnType[]>([]);
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const data = await fetchApi();
-        setLinks(data);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    getData();
-  }, []);
+  const links = useFetch();
 
   const handleTableHead = (heads: string[]) =>
     heads.map((head: string, idx: number) => (

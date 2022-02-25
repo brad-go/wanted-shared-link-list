@@ -21,7 +21,6 @@ import colors from 'styles/colors';
 const DetailPage: FC = () => {
   const { currentKey } = useParams();
   const [link, setLink] = useState<ApiReturnType>(API_DEFAULT_DATA);
-
   const { expire } = useExpire(link);
 
   useEffect(() => {
