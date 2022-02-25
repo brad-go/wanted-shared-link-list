@@ -5,7 +5,7 @@ import { changeToReadableFileSize } from 'utils';
 import colors from 'styles/colors';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { handleLinkUrl } from 'utils';
+import { handleLinkUrl, addCommaToNumber } from 'utils';
 
 interface LinksProps {
   link: ApiReturnType;
@@ -49,7 +49,7 @@ const LinkItem = ({ link }: LinksProps) => {
         </TableCell>
         <TableCell>
           <span>파일개수</span>
-          <span>{link.count}</span>
+          <span>{addCommaToNumber(link.count)}</span>
         </TableCell>
         <TableCell>
           <span>파일사이즈</span>
