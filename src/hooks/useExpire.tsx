@@ -12,7 +12,7 @@ const useExpire = (link: ApiReturnType) => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [link]);
   return { expire };
 };
 
