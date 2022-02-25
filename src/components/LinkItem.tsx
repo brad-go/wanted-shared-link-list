@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Avatar from './Avatar';
 import {
   handleLinkUrl,
+  changeUnixToDate,
   changeToReadableFileSize,
   addCommaToNumber,
   getCurrentUrl,
@@ -10,6 +11,7 @@ import {
 import type { ApiReturnType } from 'types';
 import colors from 'styles/colors';
 import styled from 'styled-components';
+import { calcExpirationDate } from 'utils/format';
 
 interface LinksProps {
   link: ApiReturnType;
@@ -23,13 +25,13 @@ const LinkItem = ({ link }: LinksProps) => {
       <Avatar text={email} key={idx} />
     ));
 
-  const goDetail = () => {
+  const goToDetailPage = () => {
     navigate(`/${link.key}`);
   };
 
   return (
     <>
-      <TableRow onClick={goDetail}>
+      <TableRow onClick={goToDetailPage}>
         <TableCell>
           <LinkInfo>
             <LinkImage>
@@ -61,7 +63,7 @@ const LinkItem = ({ link }: LinksProps) => {
         <TableCell>
           <span>유효기간</span>
           {/* !!!수정 필요!!! */}
-          <span>48시간 00분</span>
+          <span>{calcExpirationDate(link.expires_at)}</span>
         </TableCell>
         <TableCell>
           <span>받은사람</span>

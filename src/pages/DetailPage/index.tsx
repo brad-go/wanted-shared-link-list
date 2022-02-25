@@ -50,14 +50,12 @@ const DetailPage: FC = () => {
   return (
     <>
       {!isLoading && (
-        <div>
+        <>
           {link ? (
             <>
               <Header>
                 <LinkInfo>
-                  <Title>
-                    {link.sent?.content ? link.sent.subject : '제목 없음'}
-                  </Title>
+                  <Title>{link.sent ? link.sent.subject : '제목 없음'}</Title>
                   <Url onClick={(e) => handleLinkUrl(e, link)}>
                     {getCurrentUrl()}
                   </Url>
@@ -99,7 +97,7 @@ const DetailPage: FC = () => {
           ) : (
             <Error404Page />
           )}
-        </div>
+        </>
       )}
     </>
   );
