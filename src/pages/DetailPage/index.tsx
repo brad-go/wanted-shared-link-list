@@ -23,6 +23,21 @@ const DetailPage: FC = () => {
   const [link, setLink] = useState<ApiReturnType>(API_DEFAULT_DATA);
   const { expire } = useExpire(link);
 
+  const handleFileList = (fileList: FilesType[]) =>
+    fileList.map(({ key, name, size, thumbnailUrl }) => (
+      <FileListItem key={key}>
+        <FileItemInfo thumbnailUrl={thumbnailUrl}>
+          <span />
+          <span>{name}</span>
+        </FileItemInfo>
+        <FileItemSize>{changeToReadableFileSize(size)}</FileItemSize>
+      </FileListItem>
+    ));
+
+  const handleDownload = () => {
+    if (expire !== '만료됨') alert('다운로드 되었습니다.');
+  };
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -36,17 +51,6 @@ const DetailPage: FC = () => {
     getData();
   }, []);
 
-  const handleFileList = (fileList: FilesType[]) =>
-    fileList.map(({ key, name, size, thumbnailUrl }) => (
-      <FileListItem key={key}>
-        <FileItemInfo thumbnailUrl={thumbnailUrl}>
-          <span />
-          <span>{name}</span>
-        </FileItemInfo>
-        <FileItemSize>{changeToReadableFileSize(size)}</FileItemSize>
-      </FileListItem>
-    ));
-
   return (
     <>
       {link ? (
@@ -58,13 +62,18 @@ const DetailPage: FC = () => {
                 {expire === EXPIRE ? expire : getCurrentUrl()}
               </Url>
             </LinkInfo>
-            <DownloadButton>
-              <img
-                referrerPolicy="no-referrer"
-                src="/svgs/download.svg"
-                alt="download image"
-              />
-              받기
+            <DownloadButton onClick={handleDownload}>
+              <DownloadLink
+                href={expire !== '만료됨' ? link.summary : void 0}
+                download={expire !== '만료됨' ? true : false}
+              >
+                <img
+                  referrerPolicy="no-referrer"
+                  src="/svgs/download.svg"
+                  alt="download image"
+                />
+                받기
+              </DownloadLink>
             </DownloadButton>
           </Header>
           <Article>
@@ -83,11 +92,15 @@ const DetailPage: FC = () => {
                 <Image thumbnailUrl={link.thumbnailUrl} />
               </LinkImage>
             </Descrition>
-            <ListSummary>
-              <div>총 {addCommaToNumber(link.count)}개의 파일</div>
-              <div>{changeToReadableFileSize(link.size)}</div>
-            </ListSummary>
-            <FileList>{handleFileList(link.files)}</FileList>
+            {expire !== EXPIRE && (
+              <>
+                <ListSummary>
+                  <div>총 {addCommaToNumber(link.count)}개의 파일</div>
+                  <div>{changeToReadableFileSize(link.size)}</div>
+                </ListSummary>
+                <FileList>{handleFileList(link.files)}</FileList>
+              </>
+            )}
           </Article>
         </>
       ) : (
@@ -134,10 +147,14 @@ const Url = styled.a`
 
 const DownloadButton = styled(Button)`
   font-size: 16px;
-
+  cursor: pointer;
   img {
     margin-right: 8px;
   }
+`;
+
+const DownloadLink = styled.a`
+  all: unset;
 `;
 
 const Article = styled.article`
