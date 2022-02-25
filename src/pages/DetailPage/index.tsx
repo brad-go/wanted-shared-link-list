@@ -8,6 +8,7 @@ import useExpire from 'hooks/useExpire';
 import {
   changeUnixToDate,
   changeToReadableFileSize,
+  calcExpirationDate,
   addCommaToNumber,
   handleLinkUrl,
   getCurrentUrl,
@@ -59,7 +60,9 @@ const DetailPage: FC = () => {
             <LinkInfo>
               <Title>{link.sent ? link.sent.subject : SUBJECTLESS}</Title>
               <Url onClick={(e) => handleLinkUrl(e, link, expire)}>
-                {expire === EXPIRE ? expire : getCurrentUrl()}
+                {calcExpirationDate(link.expires_at) === EXPIRE
+                  ? expire
+                  : getCurrentUrl()}
               </Url>
             </LinkInfo>
             <DownloadButton onClick={handleDownload}>
@@ -223,7 +226,7 @@ const Image = styled.span<{ thumbnailUrl: string }>`
   width: 120px;
   display: inline-block;
   background-image: ${({ thumbnailUrl }) =>
-    thumbnailUrl ? `url(${thumbnailUrl})` : `url(/svgs/adefltu.svg)`};
+    thumbnailUrl ? `url(${thumbnailUrl})` : `url(/svgs/default.svg)`};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
