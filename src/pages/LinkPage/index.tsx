@@ -3,13 +3,14 @@ import type { FC } from 'react';
 import { fetchApi } from 'api';
 import { LinkItem } from 'components';
 import { TABLE_HEAD } from 'constants/index';
+import { API_MOCK_DATA } from 'constants/api';
 import type { ApiReturnType } from 'types';
 import styled from 'styled-components';
 import colors from 'styles/colors';
 import useFetch from 'hooks/useFetch';
 
 const LinkPage: FC = () => {
-  const links = useFetch();
+  const [links, setLinks] = useState(API_MOCK_DATA);
 
   const handleTableHead = (heads: string[]) =>
     heads.map((head: string, idx: number) => (
