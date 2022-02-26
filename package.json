@@ -23,8 +23,10 @@
     "web-vitals": "^2.1.3"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "yarn start",
+    "start-dev": "react-app-rewired start",
+    "build": "yarn build",
+    "build-dev": "react-app-rewired build",
     "eject": "react-app-rewired eject"
   },
   "eslintConfig": {
