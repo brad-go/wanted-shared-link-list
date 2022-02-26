@@ -2,8 +2,9 @@ import axios from 'axios';
 import { API_URL } from 'constants/api';
 import { ApiReturnType } from 'types';
 
-const { REACT_APP_API_ENDPOINT } = process.env;
+const PROXY = window.location.hostname === 'localhost' ? '' : '/proxy/';
+const URL = `${PROXY}${API_URL}`;
 
 export const fetchApi = async () => {
-  return axios.get<ApiReturnType[]>(API_URL).then((res) => res.data);
+  return axios.get<ApiReturnType[]>(URL).then((res) => res.data);
 };
