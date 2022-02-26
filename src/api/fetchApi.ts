@@ -6,5 +6,5 @@ const PROXY = window.location.hostname === 'localhost' ? '' : '/proxy/';
 const URL = `${PROXY}${API_URL}`;
 
 export const fetchApi = async () => {
-  return axios.get<ApiReturnType[]>(URL).then((res) => res.data);
+  return axios.get<ApiReturnType[]>(`/api${API_URL}`).then((res) => res.data);
 };
