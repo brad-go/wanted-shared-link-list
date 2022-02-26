@@ -27,6 +27,10 @@
    ```bash
    yarn install
    ```
+3. 프로젝트 root 디렉토리에 `.env` 파일을 생성하고 API_POINT를 추가합니다.
+    ```bash
+    REACT_APP_API_POINT=<proxy 뒤에 들어올 나머지 API 주소>
+    ```
 5. 아래 커맨드로 프로젝트를 실행합니다.
    ```bash
    yarn start
@@ -75,6 +79,8 @@
 #### API 및 배포
 
 &nbsp;API 데이터를 가져오는데 CORS 문제로 인해 데이터를 불러올 수 없었습니다. 개발 시에는 package.json의 proxy를 이용해서 개발을 진행했지만, netlify를 통해 배포를 하려고 했을때 데이터를 읽어오지 못하는 오류가 발생했습니다. redirect를 이용해서 해결해보려고 했지만, 실패했습니다. 화면을 보여주는게 우선이라고 생각해서 MOCK_DATA를 통해서 우선 배포를 진행했습니다.
+- 해결완료!
+  - Proxy 설정으로 문제를 해결해였습니다.
 
 #### 이미지 로드가 되지 않는 문제
 
