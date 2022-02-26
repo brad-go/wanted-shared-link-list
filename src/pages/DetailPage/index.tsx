@@ -12,7 +12,7 @@ import {
   handleLinkUrl,
   getCurrentUrl,
 } from 'utils';
-import { API_DEFAULT_DATA, API_MOCK_DATA } from 'constants/api';
+import { API_DEFAULT_DATA } from 'constants/api';
 import { EXPIRE, SUBJECTLESS } from 'constants/string';
 import type { ApiReturnType, FilesType } from 'types';
 import styled from 'styled-components';
@@ -44,9 +44,7 @@ const DetailPage: FC = () => {
       try {
         setIsLoading(true);
         const data = await fetchApi();
-        const payload = API_MOCK_DATA.filter(
-          ({ key }) => key === currentKey,
-        )[0];
+        const payload = data.filter(({ key }) => key === currentKey)[0];
         setLink(payload);
         setIsLoading(false);
       } catch (e) {

@@ -1,16 +1,12 @@
 import axios from 'axios';
-import { API_URL } from 'constants/api';
 import { ApiReturnType } from 'types';
 
-// const PROXY = window.location.hostname === 'localhost' ? '' : '/proxy';
-// // const PROXY = '/proxy';
-// const URL = `${PROXY}${API_URL}`;
-// console.log(URL);
-const { REACT_APP_API_ENDPOINT }: any = process.env;
+const { REACT_APP_API_POINT }: any = process.env;
+const PROXY = window.location.hostname === 'localhost' ? '' : '/proxy';
 
 export const fetchApi = async () => {
   return axios
-    .get<ApiReturnType[]>(REACT_APP_API_ENDPOINT, {
+    .get<ApiReturnType[]>(`${PROXY}${REACT_APP_API_POINT}`, {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
