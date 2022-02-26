@@ -7,7 +7,7 @@ const HH = 1000 * 60 * 60;
 const DD = 1000 * 60 * 60 * 24;
 
 export const changeUnixToDate = (number: number): string => {
-  const date: Date = new Date((number + DAYS_30) * 1000);
+  const date: Date = new Date((number + DAYS_45) * 1000);
   const year: number = date.getFullYear();
   const month: number = date.getMonth() + 1;
   const day: number = date.getDate();
@@ -21,7 +21,7 @@ export const changeUnixToDate = (number: number): string => {
 
 export const calcExpirationDate = (number: number): string => {
   const now: number = new Date().getTime();
-  const exiration: number = (number + DAYS_30) * 1000;
+  const exiration: number = (number + DAYS_45) * 1000;
   const restTime = exiration - now;
 
   const day = Math.abs(Math.trunc(restTime / DD));

@@ -1,4 +1,5 @@
 import { EXPIRE, SUBJECTLESS } from 'constants/string';
+import { calcExpirationDate } from './format';
 import type { ApiReturnType } from 'types';
 
 const ALERT_ADDRESS = [
@@ -9,15 +10,14 @@ const ALERT_ADDRESS = [
 export const handleLinkUrl = (
   e: React.MouseEvent<HTMLElement>,
   link: ApiReturnType,
-  expire: string,
 ) => {
-  if (expire === EXPIRE) return;
+  if (calcExpirationDate(link.expires_at) === EXPIRE) return;
   e.stopPropagation();
   const urlText = e.currentTarget.innerHTML;
   navigator.clipboard.writeText(urlText).then(
     () => {
       alert(
-        `${link.sent ? link.sent.subject : SUBJECTLESS} ${ALERT_ADDRESS[0]}.`,
+        `${link.sent ? link.sent.subject : SUBJECTLESS} ${ALERT_ADDRESS[0]}`,
       );
     },
     () => {

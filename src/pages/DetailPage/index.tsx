@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { fetchApi } from 'api';
 import { Error404Page } from 'pages';
 import Button from 'components/Button';
-import useExpire from 'hooks/useExpire';
 import {
   changeUnixToDate,
   changeToReadableFileSize,
@@ -22,7 +21,7 @@ import colors from 'styles/colors';
 const DetailPage: FC = () => {
   const { currentKey } = useParams();
   const [link, setLink] = useState<ApiReturnType>(API_DEFAULT_DATA);
-  const { expire } = useExpire(link);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleFileList = (fileList: FilesType[]) =>
     fileList.map(({ key, name, size, thumbnailUrl }) => (
@@ -36,15 +35,18 @@ const DetailPage: FC = () => {
     ));
 
   const handleDownload = () => {
-    if (expire !== '만료됨') alert('다운로드 되었습니다.');
+    if (calcExpirationDate(link.expires_at) !== EXPIRE)
+      alert('다운로드 되었습니다.');
   };
 
   useEffect(() => {
     const getData = async () => {
       try {
+        setIsLoading(true);
         const data = await fetchApi();
         const payload = data.filter(({ key }) => key === currentKey)[0];
         setLink(payload);
+        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -54,60 +56,74 @@ const DetailPage: FC = () => {
 
   return (
     <>
-      {link ? (
+      {!isLoading && (
         <>
-          <Header>
-            <LinkInfo>
-              <Title>{link.sent ? link.sent.subject : SUBJECTLESS}</Title>
-              <Url onClick={(e) => handleLinkUrl(e, link, expire)}>
-                {calcExpirationDate(link.expires_at) === EXPIRE
-                  ? expire
-                  : getCurrentUrl()}
-              </Url>
-            </LinkInfo>
-            <DownloadButton onClick={handleDownload}>
-              <DownloadLink
-                href={expire !== '만료됨' ? link.summary : void 0}
-                download={expire !== '만료됨' ? true : false}
-              >
-                <img
-                  referrerPolicy="no-referrer"
-                  src="/svgs/download.svg"
-                  alt="download image"
-                />
-                받기
-              </DownloadLink>
-            </DownloadButton>
-          </Header>
-          <Article>
-            <Descrition>
-              <Texts>
-                <Top>링크 생성일</Top>
-                <Bottom>{changeUnixToDate(link.created_at)}</Bottom>
-                <Top>메세지</Top>
-                <Bottom>
-                  {link.sent?.content ? link.sent.content : '내용이 없습니다'}
-                </Bottom>
-                <Top>다운로드 횟수</Top>
-                <Bottom>{link.download_count}</Bottom>
-              </Texts>
-              <LinkImage>
-                <Image thumbnailUrl={link.thumbnailUrl} />
-              </LinkImage>
-            </Descrition>
-            {expire !== EXPIRE && (
-              <>
-                <ListSummary>
-                  <div>총 {addCommaToNumber(link.count)}개의 파일</div>
-                  <div>{changeToReadableFileSize(link.size)}</div>
-                </ListSummary>
-                <FileList>{handleFileList(link.files)}</FileList>
-              </>
-            )}
-          </Article>
+          {link ? (
+            <>
+              <Header>
+                <LinkInfo>
+                  <Title>{link.sent ? link.sent.subject : SUBJECTLESS}</Title>
+                  <Url onClick={(e) => handleLinkUrl(e, link)}>
+                    {calcExpirationDate(link.expires_at) === EXPIRE
+                      ? EXPIRE
+                      : getCurrentUrl()}
+                  </Url>
+                </LinkInfo>
+                <DownloadButton onClick={handleDownload}>
+                  <DownloadLink
+                    href={
+                      calcExpirationDate(link.expires_at) !== EXPIRE
+                        ? link.summary
+                        : void 0
+                    }
+                    download={
+                      calcExpirationDate(link.expires_at) !== EXPIRE
+                        ? true
+                        : false
+                    }
+                  >
+                    <img
+                      referrerPolicy="no-referrer"
+                      src="/svgs/download.svg"
+                      alt="download image"
+                    />
+                    받기
+                  </DownloadLink>
+                </DownloadButton>
+              </Header>
+              <Article>
+                <Descrition>
+                  <Texts>
+                    <Top>링크 생성일</Top>
+                    <Bottom>{changeUnixToDate(link.created_at)}</Bottom>
+                    <Top>메세지</Top>
+                    <Bottom>
+                      {link.sent?.content
+                        ? link.sent.content
+                        : '내용이 없습니다'}
+                    </Bottom>
+                    <Top>다운로드 횟수</Top>
+                    <Bottom>{link.download_count}</Bottom>
+                  </Texts>
+                  <LinkImage>
+                    <Image thumbnailUrl={link.thumbnailUrl} />
+                  </LinkImage>
+                </Descrition>
+                {calcExpirationDate(link.expires_at) !== EXPIRE && (
+                  <>
+                    <ListSummary>
+                      <div>총 {addCommaToNumber(link.count)}개의 파일</div>
+                      <div>{changeToReadableFileSize(link.size)}</div>
+                    </ListSummary>
+                    <FileList>{handleFileList(link.files)}</FileList>
+                  </>
+                )}
+              </Article>
+            </>
+          ) : (
+            <Error404Page />
+          )}
         </>
-      ) : (
-        <Error404Page />
       )}
     </>
   );
@@ -226,7 +242,9 @@ const Image = styled.span<{ thumbnailUrl: string }>`
   width: 120px;
   display: inline-block;
   background-image: ${({ thumbnailUrl }) =>
-    thumbnailUrl ? `url(${thumbnailUrl})` : `url(/svgs/default.svg)`};
+    thumbnailUrl.slice(-3) !== 'svg'
+      ? `url(${thumbnailUrl})`
+      : 'url(/svgs/default.svg)'};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -284,7 +302,9 @@ const FileItemInfo = styled.div<{ thumbnailUrl: string }>`
     margin-right: 12px;
     display: inline-block;
     background-image: ${({ thumbnailUrl }) =>
-      thumbnailUrl ? `url(${thumbnailUrl})` : `url(/svgs/adefltu.svg)`};
+      thumbnailUrl.slice(-3) !== 'svg'
+        ? `url(${thumbnailUrl})`
+        : `url(/svgs/default.svg)`};
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
