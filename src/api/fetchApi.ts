@@ -3,7 +3,7 @@ import { API_URL } from 'constants/api';
 import { ApiReturnType } from 'types';
 
 const PROXY = window.location.hostname === 'localhost' ? '' : '/proxy';
-// const PROXY = '/proxy/';
+// const PROXY = '/proxy';
 const URL = `${PROXY}${API_URL}`;
 console.log(URL);
 
