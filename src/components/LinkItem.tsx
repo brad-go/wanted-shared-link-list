@@ -31,13 +31,6 @@ const LinkItem = ({ link }: LinksProps) => {
       <Avatar text={email} key={idx} />
     ));
 
-  const handleImageError = (
-    e: React.SyntheticEvent<HTMLImageElement, Event>,
-  ) => {
-    e.currentTarget.onerror = null;
-    e.currentTarget.src = '/svgs/default.svg';
-  };
-
   return (
     <TableRow onClick={goToDetailPage}>
       <TableCell>
@@ -45,14 +38,17 @@ const LinkItem = ({ link }: LinksProps) => {
           <LinkImage>
             <img
               referrerPolicy="no-referrer"
-              src={link.thumbnailUrl}
+              src={
+                link.thumbnailUrl.slice(-3) !== 'svg'
+                  ? link.thumbnailUrl
+                  : '/svgs/default.svg'
+              }
               alt={link.summary}
-              onError={handleImageError}
             />
           </LinkImage>
           <LinkTexts>
             <LinkTitle>{link.sent ? link.sent.subject : SUBJECTLESS}</LinkTitle>
-            <LinkUrl onClick={(e) => handleLinkUrl(e, link, expire)}>
+            <LinkUrl onClick={(e) => handleLinkUrl(e, link)}>
               {expire === EXPIRE ? expire : getCurrentUrl() + link.key}
             </LinkUrl>
           </LinkTexts>
