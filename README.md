@@ -137,7 +137,7 @@ export const fetchApi = async () => {
 &nbsp;결국 하나의 다운로드 링크를 나타내는 **table row**에 onClick이벤트를 통해서 상세 페이지로 navigate시켜주는 것으로 해결할 수 있었습니다. 
 
 ```tsx
-import { useNavigate } from 'react-router-dom`;
+import { useNavigate } from 'react-router-dom';
 
 const navigate = useNavigate();
 
