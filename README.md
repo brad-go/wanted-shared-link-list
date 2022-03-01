@@ -105,7 +105,7 @@ export const addCommaToNumber = (number: number): string => {
 
 ## :boom: 6. 핵심 트러블 슈팅
 
-#### 6-1. API 및 배포
+### 6-1. API 및 배포
 
 &nbsp;API 데이터를 가져오는데 **CORS 문제**로 인해 데이터를 불러올 수 없었습니다. 서버 측에서 `Access-Control-Allow-Origin: *` 설정을 해주지 않은 것으로 생각되었습니다. 해결 책을 찾다가 **proxy**를 이용해서 데이터를 불러올 수 있었습니다.
 
@@ -138,13 +138,13 @@ export const fetchApi = async () => {
 
 - localhost가 아니라면 proxy와 api 엔드포인트를 이용해 데이터를 불러오기
 
-#### 6-2. 이미지 로드가 되지 않는 문제
+### 6-2. 이미지 로드가 되지 않는 문제
 
 &nbsp;확장자가 svg인 포함된 이미지들이 모두 불러와지지 않는 오류가 있었습니다. img태그의 onerror 이벤트를 이용해서 하려고 했지만, 그럼에도 403오류는 여전히 발생했기 때문에 확장자가 svg인 이미지들은 모두 default.svg로 대체하기로 했습니다.
 
 **[코드보기](https://github.com/brad-go/wanted-shared-link-list/blob/97a5632ff80380440c77e5f52dd87db7b0e41cca/src/pages/DetailPage/index.tsx#L244)**
 
-#### 6-3. 리액트 라우터 설정 문제
+### 6-3. 리액트 라우터 설정 문제
 
 &nbsp;클릭되면 이동해야할 태그들이 표를 만드는 `<table>` 태그와 하위 태그들로 구성되어 있어서 react-router-dom v6의 Link 태그로 감쌀 수 없는 문제가 있었습니다. 그러므로 페이지 이동 방식에 제약이 생겼고, 다른 방법을 찾아야 했습니다. &nbsp;결국 하나의 다운로드 링크를 나타내는 **table row**에 onClick이벤트를 통해서 상세 페이지로 navigate시켜주는 것으로 해결할 수 있었습니다.
 
